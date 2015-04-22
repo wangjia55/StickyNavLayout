@@ -20,8 +20,13 @@ import android.widget.OverScroller;
  */
 public class StickyNavLayout extends LinearLayout {
 
+    /**
+     * 滑动的辅助类
+     */
     private OverScroller mScroller;
-
+    /**
+     * 滑动速度检测的辅助类
+     */
     private VelocityTracker mVelocityTracker;
 
     private View mTopView;
@@ -31,17 +36,29 @@ public class StickyNavLayout extends LinearLayout {
     private ViewPager mViewPager;
 
     private ViewGroup mInnerScrollView;
-
+    /**
+     * 最上面的展示的View
+     */
     private int mTopViewHeight;
-
+    /**
+     * 是否正在滑动
+     */
     private boolean isDragging = false;
-
+    /**
+     * 滑动的距离
+     */
     private float mTouchSlop;
-
+    /**
+     * 滑动的速度
+     */
     private int mMaxVelocity ,mMinVelocity;
-
+    /**
+     * 上次滑动的位置
+     */
     private float mLastY;
-
+    /**
+     * 最顶部的View是否被隐藏
+     */
     private boolean isTopHidden;
 
     public StickyNavLayout(Context context) {
@@ -67,7 +84,9 @@ public class StickyNavLayout extends LinearLayout {
         mMinVelocity = ViewConfiguration.get(getContext()). getScaledMinimumFlingVelocity();
     }
 
-
+    /**
+     * 初始化所有的View
+     */
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
@@ -85,6 +104,10 @@ public class StickyNavLayout extends LinearLayout {
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+
+        /**
+         * 这里需要给viewpager进行设置高度，主要是因为viewpager不会为自己的子view计算尺寸
+         */
         ViewGroup.LayoutParams params = mViewPager.getLayoutParams();
         params.height = getMeasuredHeight()-mIndicator.getMeasuredHeight();
         mViewPager.setLayoutParams(params);
@@ -102,7 +125,6 @@ public class StickyNavLayout extends LinearLayout {
         switch (ev.getAction()){
             case MotionEvent.ACTION_DOWN:
                 mLastY = y;
-
                 break;
             case MotionEvent.ACTION_MOVE:
                 int dy = (int) (y -mLastY);
@@ -110,6 +132,8 @@ public class StickyNavLayout extends LinearLayout {
                 getCurrentScrollView();
                 if (Math.abs(dy) > mTouchSlop){
                     isDragging = true;
+                    //如果topView是显示的或者滑动到最上面并且向下拉的时候，需要拦截touch事件
+
                     if (!isTopHidden || (mInnerScrollView.getScrollY() == 0 && dy >0)){
                         return  true;
                     }
@@ -139,7 +163,6 @@ public class StickyNavLayout extends LinearLayout {
                 if (!isDragging && Math.abs(dy) > mTouchSlop){
                     isDragging = true;
                 }
-                Log.e("TAG","dy:"+dy+"++dragging:"+isDragging);
                 if (isDragging){
                     scrollBy(0, (int) -dy);
                     mLastY = y;
@@ -150,6 +173,7 @@ public class StickyNavLayout extends LinearLayout {
                 mVelocityTracker.computeCurrentVelocity(1000,mMaxVelocity);
                 int velocityY = (int) mVelocityTracker.getYVelocity();
                 if (Math.abs(velocityY) > mMinVelocity){
+                    //flings是滑动的意思，这里代表的是根据给定的初速度会进行速度递减的界面滑动
                     mScroller.fling(0,getScrollY(),0,-velocityY,0,0,0,mTopViewHeight);
                     invalidate();
                 }
@@ -165,7 +189,9 @@ public class StickyNavLayout extends LinearLayout {
         return super.onTouchEvent(event);
     }
 
-
+    /**
+     * 获取底部页面中的ScrollView, 需要通过这个距离来判断是否滑到顶部
+     */
     private void getCurrentScrollView() {
         int index = mViewPager.getCurrentItem();
         PagerAdapter adapter = mViewPager.getAdapter();
@@ -185,6 +211,9 @@ public class StickyNavLayout extends LinearLayout {
         }
     }
 
+    /**
+     * 对边界值进行限制
+     */
     @Override
     public void scrollTo(int x, int y) {
         if (y < 0){
