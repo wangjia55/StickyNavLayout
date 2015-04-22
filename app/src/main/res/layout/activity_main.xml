@@ -1,7 +1,31 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.jacob.stickynavlayout.StickyNavLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-</RelativeLayout>
+    <RelativeLayout
+        android:id="@id/id_layout_top_view"
+        android:layout_width="match_parent"
+        android:layout_height="300dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="软件介绍"
+            android:textSize="35sp" />
+    </RelativeLayout>
+
+    <com.jacob.stickynavlayout.ViewPagerIndicator
+        android:id="@id/id_layout_indicator"
+        android:layout_width="match_parent"
+        android:layout_height="48dp" />
+
+    <ViewPager
+        android:id="@id/id_layout_viewpager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+</com.jacob.stickynavlayout.StickyNavLayout>

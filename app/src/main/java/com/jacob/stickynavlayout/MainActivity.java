@@ -1,17 +1,69 @@
 package com.jacob.stickynavlayout;
 
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.ViewPager;
+
+import java.util.Arrays;
+import java.util.List;
 
 
-public class MainActivity extends ActionBarActivity {
+public class MainActivity extends FragmentActivity {
+
+
+    private ViewPager mViewPager;
+    private PagerAdapter mPagerAdapter;
+    private ViewPagerIndicator mViewPagerIndicator;
+        private List<String> mListTabs = Arrays.asList("简介", "评价", "推荐");
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        mViewPager = (ViewPager) findViewById(R.id.id_layout_viewpager);
+        mPagerAdapter = new PagerAdapter(getSupportFragmentManager());
+        mViewPager.setAdapter(mPagerAdapter);
+
+
+        mViewPagerIndicator = (ViewPagerIndicator) findViewById(R.id.id_layout_indicator);
+        mViewPagerIndicator.setTabItems(mListTabs);
+        mViewPagerIndicator.setViewPager(mViewPager,0);
+        mViewPagerIndicator.setOnPageChangeListener(new ViewPagerIndicator.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int i, float v, int i2) {
+
+            }
+
+            @Override
+            public void onPageSelected(int i) {
+
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int i) {
+
+            }
+        });
     }
 
+
+    private class PagerAdapter extends FragmentPagerAdapter {
+
+        public PagerAdapter(FragmentManager fm) {
+            super(fm);
+        }
+
+        @Override
+        public Fragment getItem(int i) {
+            return PagerFragment.newInstance();
+        }
+
+        @Override
+        public int getCount() {
+            return mListTabs.size();
+        }
+    }
 }
