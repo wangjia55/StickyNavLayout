@@ -34,17 +34,6 @@ public class ViewPagerIndicator extends LinearLayout implements ViewPager.OnPage
      * 绘制提示器三角形的画笔
      */
     private Paint mPaintTriangle = new Paint(Paint.ANTI_ALIAS_FLAG);
-    ;
-    /**
-     * 绘制三角形的路径
-     */
-    private Path mPath = new Path();
-    ;
-    /**
-     * 三角形的宽和高
-     */
-    private float mTriangleWidth;
-    private float mTriangleHeight;
 
     /**
      * 默认三角形的宽度是一个tab宽度的1/3
@@ -54,17 +43,14 @@ public class ViewPagerIndicator extends LinearLayout implements ViewPager.OnPage
     /**
      * 默认最大的可见的Tab的个数是4个
      */
-    public int mTabVisibleCount = 4;
+    public int mTabVisibleCount = 3;
 
+    private int mTabWidth;
     /**
      * 三角形的最大宽度
      */
     private final int DIMENSION_TRIANGEL_WIDTH = (int) (getScreenWidth() / 3 * RATIO_TRIANGLE);
 
-    /**
-     * 初始时三角形的偏移量
-     */
-    private float mInitTranslationX;
 
     /**
      * 在滑动过程中三角形的偏移量
@@ -74,11 +60,11 @@ public class ViewPagerIndicator extends LinearLayout implements ViewPager.OnPage
     /**
      * 标题正常时的颜色
      */
-    private static final int COLOR_TEXT_NORMAL = 0x77FFFFFF;
+    private static final int COLOR_TEXT_NORMAL = 0xFF000000;
     /**
      * 标题选中时的颜色
      */
-    private static final int COLOR_TEXT_HIGHLIGHTCOLOR = 0xFFFFFFFF;
+    private static final int COLOR_TEXT_HIGHLIGHTCOLOR = 0xFF000000;
 
     private OnPageChangeListener mPagerChangeListener;
 
@@ -100,22 +86,18 @@ public class ViewPagerIndicator extends LinearLayout implements ViewPager.OnPage
      * 初始化画笔
      */
     private void initView() {
-        mPaintTriangle.setColor(Color.WHITE);
+        mPaintTriangle.setColor(Color.parseColor("#ff6ed887"));
         mPaintTriangle.setDither(true);
         mPaintTriangle.setStyle(Paint.Style.FILL);
-        mPaintTriangle.setStrokeJoin(Paint.Join.ROUND);
+        mPaintTriangle.setStrokeWidth(15);
         mPaintTriangle.setPathEffect(new CornerPathEffect(3));
-
-        mTriangleWidth = DIMENSION_TRIANGEL_WIDTH;
-        mTriangleHeight = mTriangleWidth / 2;
-
     }
 
     @Override
     protected void dispatchDraw(Canvas canvas) {
         canvas.save();
-        canvas.translate(mInitTranslationX + mTranslationX, getHeight() + 1);
-        canvas.drawPath(mPath, mPaintTriangle);
+        canvas.translate( mTranslationX, getHeight() + 1);
+        canvas.drawLine(0,0,mTabWidth,0 ,mPaintTriangle);
         canvas.restore();
         super.dispatchDraw(canvas);
     }
@@ -123,15 +105,7 @@ public class ViewPagerIndicator extends LinearLayout implements ViewPager.OnPage
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
-
-        mPath.moveTo(0, 0);
-        mPath.lineTo(mTriangleWidth / 2, -mTriangleHeight);
-        mPath.lineTo(mTriangleWidth, 0);
-        mPath.close();
-
-        // 初始时的偏移量
-        mInitTranslationX = getWidth() / mTabVisibleCount / 2 - mTriangleWidth
-                / 2;
+        mTabWidth = getScreenWidth() / mTabVisibleCount;
     }
 
     /**
@@ -166,8 +140,8 @@ public class ViewPagerIndicator extends LinearLayout implements ViewPager.OnPage
      * 以及TabLayout中的位置
      */
     private void scroll(int position, float positionOffset) {
-        int tabWidth = getScreenWidth() / mTabVisibleCount;
-        mTranslationX = tabWidth * (position + positionOffset);
+        mTabWidth = getScreenWidth() / mTabVisibleCount;
+        mTranslationX = mTabWidth * (position + positionOffset);
 //        Log.e("TAG",tabWidth+"++"+position+"++"+mTranslationX+"++"+getWidth()+"++"+getScreenWidth());
         if ((positionOffset > 0)
                 && (position >= mTabVisibleCount - 2)
@@ -177,13 +151,13 @@ public class ViewPagerIndicator extends LinearLayout implements ViewPager.OnPage
                     //这里需要注意的是，position是从0开始计算的，
                     //如果屏幕可见的是4个tab，那从第三个开始就开始需要滑动整个布局
                     //y轴是不需要滑动的
-                    this.scrollTo(((position+1) - (mTabVisibleCount - 1)) * tabWidth
-                            + (int) (tabWidth * positionOffset), 0);
+                    this.scrollTo(((position+1) - (mTabVisibleCount - 1)) * mTabWidth
+                            + (int) (mTabWidth * positionOffset), 0);
                 }
             } else {
                 // 为count为1时 的特殊处理
                 this.scrollTo(
-                        position * tabWidth + (int) (tabWidth * positionOffset), 0);
+                        position * mTabWidth + (int) (mTabWidth * positionOffset), 0);
             }
         }
         invalidate();

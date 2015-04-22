@@ -12,12 +12,11 @@ import java.util.List;
 
 
 public class MainActivity extends FragmentActivity {
-
-
     private ViewPager mViewPager;
     private PagerAdapter mPagerAdapter;
     private ViewPagerIndicator mViewPagerIndicator;
-        private List<String> mListTabs = Arrays.asList("简介", "评价", "推荐");
+    private List<String> mListTabs = Arrays.asList("简介", "评论", "关于");
+    private TabFragment[] mFragments;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,11 +25,16 @@ public class MainActivity extends FragmentActivity {
         mViewPager = (ViewPager) findViewById(R.id.id_layout_viewpager);
         mPagerAdapter = new PagerAdapter(getSupportFragmentManager());
         mViewPager.setAdapter(mPagerAdapter);
+        mFragments = new TabFragment[mListTabs.size()];
 
+        for (int i = 0; i < mListTabs.size(); i++)
+        {
+            mFragments[i] = TabFragment.newInstance();
+        }
 
         mViewPagerIndicator = (ViewPagerIndicator) findViewById(R.id.id_layout_indicator);
         mViewPagerIndicator.setTabItems(mListTabs);
-        mViewPagerIndicator.setViewPager(mViewPager,0);
+        mViewPagerIndicator.setViewPager(mViewPager, 0);
         mViewPagerIndicator.setOnPageChangeListener(new ViewPagerIndicator.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int i, float v, int i2) {
@@ -58,7 +62,7 @@ public class MainActivity extends FragmentActivity {
 
         @Override
         public Fragment getItem(int i) {
-            return PagerFragment.newInstance();
+            return mFragments[i];
         }
 
         @Override

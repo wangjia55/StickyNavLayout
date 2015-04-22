@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <item name="id_layout_top_view" type="id"/>
-    <item name="id_layout_indicator" type="id"/>
-    <item name="id_layout_viewpager" type="id"/>
-    <item name="id_layout_inner_scrollview" type="id"/>
-</resources>

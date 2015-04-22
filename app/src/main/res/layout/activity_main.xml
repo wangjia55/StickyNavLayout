@@ -6,9 +6,10 @@
     tools:context=".MainActivity">
 
     <RelativeLayout
-        android:id="@id/id_layout_top_view"
+        android:id="@+id/id_layout_top_view"
         android:layout_width="match_parent"
-        android:layout_height="300dp">
+        android:background="#ff6ed887"
+        android:layout_height="200dp">
 
         <TextView
             android:layout_width="wrap_content"
@@ -19,13 +20,15 @@
     </RelativeLayout>
 
     <com.jacob.stickynavlayout.ViewPagerIndicator
-        android:id="@id/id_layout_indicator"
+        android:id="@+id/id_layout_indicator"
         android:layout_width="match_parent"
+        android:background="#fffffefa"
         android:layout_height="48dp" />
 
-    <ViewPager
-        android:id="@id/id_layout_viewpager"
+    <android.support.v4.view.ViewPager
+        android:id="@+id/id_layout_viewpager"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:visibility="visible"/>
 
 </com.jacob.stickynavlayout.StickyNavLayout>
